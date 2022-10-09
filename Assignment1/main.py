@@ -16,12 +16,14 @@ def visualize(a, b, c, x1, y1, x2, y2):
 
 
 def isToTheLeftOfLine(x_point, y_point, indices):
-    return (indices[0] * x_point + indices[1] * y_point + indices[2]) < 0
+    return (indices[0] * x_point + indices[1] * y_point + indices[2]) > 0
 
 
 def classifyPoint(x, y, label, indices):
     leftSide = isToTheLeftOfLine(x, y, indices)
     if label == -1 and leftSide:
+        return True
+    elif label == 1 and not leftSide:
         return True
     else:
         return False
@@ -30,6 +32,7 @@ def classifyPoint(x, y, label, indices):
 def solve(allPoints):
     stillSearching = True
     globalCounter = 0
+    # globalIndices = np.array([-1000, 1, 47000])  # one optimal solution
     globalIndices = np.array([1, -1, 0])  # initialize a=1, b=-1, c=0 resulting y=x
     while stillSearching:
         stillSearching = False
@@ -37,6 +40,8 @@ def solve(allPoints):
             for indicesIdx in range(2):
                 counter = 0
                 indices = globalIndices.copy()
+                if indices[1] + offset == 0:  # b != 0 for plotting
+                    continue
                 indices[indicesIdx] += offset
                 for point in allPoints:
                     x_point = point[0]
