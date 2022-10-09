@@ -30,7 +30,7 @@ def classifyPoint(x, y, label, indices):
 def solve(allPoints):
     stillSearching = True
     globalCounter = 0
-    globalIndices = np.array([1, -1, 0])
+    globalIndices = np.array([1, -1, 0])  # initialize a=1, b=-1, c=0 resulting y=x
     while stillSearching:
         stillSearching = False
         for offset in np.array([1, -1]):
@@ -57,13 +57,14 @@ def solve(allPoints):
 
 x1 = np.random.uniform(0, 45, 50)
 y1 = np.random.uniform(0, 100, 50)
-leftPoints = np.vstack((x1, y1, np.ones(50))).T
+leftPoints = np.vstack((x1, y1, np.ones(50) * -1)).T
 
 x2 = np.random.uniform(55, 100, 50)
 y2 = np.random.uniform(0, 100, 50)
-rightPoints = np.vstack((x2, y2, np.ones(50) * -1)).T
+rightPoints = np.vstack((x2, y2, np.ones(50))).T
 
 allPoints = np.concatenate((leftPoints, rightPoints))
+np.random.shuffle(allPoints)
 print("Number of points:", len(allPoints))
 
 a = 1
