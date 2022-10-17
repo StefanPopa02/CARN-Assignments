@@ -29,11 +29,27 @@ def classifyPoint(x, y, label, indices):
         return False
 
 
+def hillClimb(allPoints, counter, globalCounter, globalIndices, indices, stillSearching):
+    for point in allPoints:
+        x_point = point[0]
+        y_point = point[1]
+        label_point = point[2]
+        classification = classifyPoint(x_point, y_point, label_point, indices)
+        if classification:
+            counter = counter + 1
+        print("x=", point[0], " y=", point[1], " label=", point[2], "classif", classification)
+    if counter > globalCounter:
+        stillSearching = True
+        globalCounter = counter
+        globalIndices = indices
+    return globalCounter, globalIndices, stillSearching
+
+
 def solve(allPoints):
     stillSearching = True
     globalCounter = 0
-    # globalIndices = np.array([-1000, 1, 47000])  # one optimal solution
-    globalIndices = np.array([1, -1, 0])  # initialize a=1, b=-1, c=0 resulting y=x
+    globalIndices = np.array([-1000, 1, 47000])  # one optimal solution
+    # globalIndices = np.array([1, -1, 0])  # initialize a=1, b=-1, c=0 resulting y=x
     while stillSearching:
         stillSearching = False
         for offset in np.array([1, -1]):
@@ -43,18 +59,8 @@ def solve(allPoints):
                 if indices[1] + offset == 0:  # b != 0 for plotting
                     continue
                 indices[indicesIdx] += offset
-                for point in allPoints:
-                    x_point = point[0]
-                    y_point = point[1]
-                    label_point = point[2]
-                    classification = classifyPoint(x_point, y_point, label_point, indices)
-                    if classification:
-                        counter = counter + 1
-                    print("x=", point[0], " y=", point[1], " label=", point[2], "classif", classification)
-                if counter > globalCounter:
-                    stillSearching = True
-                    globalCounter = counter
-                    globalIndices = indices
+                globalCounter, globalIndices, stillSearching = hillClimb(allPoints, counter, globalCounter,
+                                                                         globalIndices, indices, stillSearching)
     print("Correct classified:", globalCounter)
     print("Indices", globalIndices)
     return globalIndices
